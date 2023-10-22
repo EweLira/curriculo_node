@@ -7,7 +7,7 @@ const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use('/curriculos', curriculoRoutes);
+app.use('/', curriculoRoutes);
 
 const PORT = 3000;
 
