@@ -4,6 +4,8 @@ exports.up = function(knex) {
       table.string('nome').notNullable();
       table.string('email').notNullable();
       table.text('experiencia').notNullable();
+      table.string('linguas').notNullable();
+      table.string('telefone').notNullable();
       table.timestamps(true, true);
     });
   };

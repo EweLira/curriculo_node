@@ -2,7 +2,7 @@ const path = require('path');
 const knex = require('knex');
 const { format } = require('date-fns');
 const knexFile = require('../knexfile.js');
-const db = knex(knexFile);
+const banco = knex(knexFile);
 
 function validateRequiredFields(fields) {
     return fields.every((field) => field !== undefined && field !== null);
@@ -22,7 +22,7 @@ function sendErrorResponse(res, statusCode, message) {
 
 exports.list = async (req, res) => {
     try {
-        const curriculos = await db('curriculos').select();
+        const curriculos = await banco('curriculos').select();
         curriculos.forEach((curriculo) => {
             curriculo.created_at = formatDate(curriculo.created_at);
             curriculo.updated_at = formatDate(curriculo.updated_at);
@@ -35,15 +35,15 @@ exports.list = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-    const { nome, email, experiencia } = req.body;
+    const { nome, email, experiencia, linguas, telefone } = req.body;
 
-    if (!validateRequiredFields([nome, email, experiencia])) {
+    if (!validateRequiredFields([nome, email, experiencia, linguas, telefone])) {
         return sendErrorResponse(res, 400, "Campos obrigatórios não preenchidos.");
     }
 
     try {
-        await db('curriculos').insert({ nome, email, experiencia });
-        sendSuccessResponse(res, "Currículo adicionado com sucesso.");
+        await banco('curriculos').insert({ nome, email, experiencia });
+        sendSuccessResponse(res, "Informações do curriculo atualizada com sucesso!");
     } catch (error) {
         console.error(error);
         sendErrorResponse(res, 500, "Falha ao adicionar currículo.");
@@ -53,7 +53,7 @@ exports.create = async (req, res) => {
 exports.get = async (req, res) => {
     const id = req.params.id;
     try {
-        const curriculo = await db('curriculos').where('id', id).first();
+        const curriculo = await banco('curriculos').where('id', id).first();
         if (curriculo) {
             curriculo.created_at = formatDate(curriculo.created_at);
             curriculo.updated_at = formatDate(curriculo.updated_at);
@@ -69,14 +69,14 @@ exports.get = async (req, res) => {
 
 exports.update = async (req, res) => {
     const id = req.params.id;
-    const { nome, email, experiencia } = req.body;
+    const { nome, email, experiencia, linguas, telefone} = req.body;
 
-    if (!validateRequiredFields([nome, email, experiencia])) {
+    if (!validateRequiredFields([nome, email, experiencia, linguas, telefone])) {
         return sendErrorResponse(res, 400, "Campos obrigatórios não preenchidos.");
     }
 
     try {
-        const updated = await db('curriculos').where('id', id).update({ nome, email, experiencia });
+        const updated = await banco('curriculos').where('id', id).update({ nome, email, experiencia });
         if (updated) {
             sendSuccessResponse(res, "Currículo atualizado com sucesso.");
         } else {
@@ -91,7 +91,7 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
     const id = req.params.id;
     try {
-        const deleted = await db('curriculos').where('id', id).del();
+        const deleted = await banco('curriculos').where('id', id).del();
         if (deleted) {
             sendSuccessResponse(res, "Currículo deletado com sucesso.");
         } else {
