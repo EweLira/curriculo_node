@@ -42,7 +42,7 @@ exports.create = async (req, res) => {
     }
 
     try {
-        await banco('curriculos').insert({ nome, email, experiencia });
+        await banco('curriculos').insert({ nome, email, experiencia, linguas, telefone });
         sendSuccessResponse(res, "Informações do curriculo atualizada com sucesso!");
     } catch (error) {
         console.error(error);
